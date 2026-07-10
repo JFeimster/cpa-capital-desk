@@ -5,6 +5,9 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "git": {
-    "deploymentEnabled": false
+    "deploymentEnabled": {
+      "*": false,
+      "main": false
+    }
   }
 }

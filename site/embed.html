@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Pressure Capital Estimator | Embed Widget</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="embed-body">
+
+  <div class="embed-frame">
+    <!-- Compact Branded Header -->
+    <div class="embed-header">
+      <div class="embed-brand">
+        <span class="logo-dot" aria-hidden="true" style="display:inline-block; width:8px; height:8px; background-color:var(--accent-color); border-radius:2px; margin-right:4px;"></span>
+        <span id="embedBrandName">CPA Capital Desk</span>
+      </div>
+      <div class="embed-tool-title">Tax Pressure Estimator</div>
+    </div>
+
+    <!-- Layout is stacked or grid in embed -->
+    <div class="calculator-area" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 0;">
+      
+      <!-- Input Panel -->
+      <section class="form-panel" aria-labelledby="embedFormTitle" style="padding: 1.25rem; border: none; box-shadow: none;">
+        <h2 id="embedFormTitle" class="sr-only">Liquidity Worksheet</h2>
+        
+        <form id="calculatorForm" novalidate>
+          
+          <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <!-- 1. Tax payment amount -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="taxAmount">Tax funds due</label>
+              <div class="input-wrapper">
+                <span class="input-prefix" aria-hidden="true">$</span>
+                <input type="number" id="taxAmount" class="has-prefix" placeholder="0" min="0" required>
+              </div>
+              <span class="error-message" id="taxAmountError" role="alert"></span>
+            </div>
+
+            <!-- 2. Payment due date -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="dueDate">Payment due date</label>
+              <input type="date" id="dueDate" required>
+              <span class="error-message" id="dueDateError" role="alert"></span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <!-- 3. Current operating cash -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="operatingCash">Operating cash available today</label>
+              <div class="input-wrapper">
+                <span class="input-prefix" aria-hidden="true">$</span>
+                <input type="number" id="operatingCash" class="has-prefix" placeholder="0" min="0" required>
+              </div>
+              <span class="error-message" id="operatingCashError" role="alert"></span>
+            </div>
+
+            <!-- 4. Tax funds already reserved -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="taxReserve">Tax funds already set aside</label>
+              <div class="input-wrapper">
+                <span class="input-prefix" aria-hidden="true">$</span>
+                <input type="number" id="taxReserve" class="has-prefix" placeholder="0" min="0">
+              </div>
+              <span class="error-message" id="taxReserveError" role="alert"></span>
+            </div>
+          </div>
+
+          <!-- 5. Expected cash collections -->
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="expectedCollections">Expected cash collections before due date</label>
+            <div class="input-wrapper">
+              <span class="input-prefix" aria-hidden="true">$</span>
+              <input type="number" id="expectedCollections" class="has-prefix" placeholder="0" min="0">
+            </div>
+            <span class="error-message" id="expectedCollectionsError" role="alert"></span>
+          </div>
+
+          <!-- 6. Average monthly operating expenses -->
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="monthlyOperatingExpenses">Average monthly operating expenses</label>
+            <div class="input-wrapper">
+              <span class="input-prefix" aria-hidden="true">$</span>
+              <input type="number" id="monthlyOperatingExpenses" class="has-prefix" placeholder="0" min="0" required>
+            </div>
+            <span class="error-message" id="monthlyExpensesError" role="alert"></span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <!-- 7. Protected operating reserve -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="reserveWeeks">Reserve to protect</label>
+              <select id="reserveWeeks">
+                <option value="0">0 weeks</option>
+                <option value="2">2 weeks</option>
+                <option value="4" selected>4 weeks</option>
+                <option value="6">6 weeks</option>
+                <option value="8">8 weeks</option>
+              </select>
+            </div>
+
+            <!-- 8. Planning buffer -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="bufferPercent">Planning buffer</label>
+              <select id="bufferPercent">
+                <option value="0">0%</option>
+                <option value="5" selected>5%</option>
+                <option value="10">10%</option>
+                <option value="15">15%</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Hidden Opt-In Persist for cleaner Embed frame unless explicitly requested -->
+          <div class="form-actions" style="margin-top: 1rem; padding-top: 1rem;">
+            <label class="persist-option" style="display: none;">
+              <input type="checkbox" id="persistInputs">
+              <span class="persist-label-title">Remember inputs</span>
+            </label>
+            <button type="submit" class="primary-btn">Calculate Liquidity Gap</button>
+            <button id="clearSavedBtn" class="secondary-btn" style="display: none;">Clear Inputs</button>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- Sticky Result Panel inside Embed Frame (displays directly below form) -->
+      <aside class="result-panel" style="padding: 1.25rem; border: none; box-shadow: none; border-top: 1px dashed var(--border-color); border-radius: 0;">
+        
+        <!-- Placeholder -->
+        <div id="resultsPlaceholder" class="result-placeholder" style="padding: 2rem 1rem;">
+          <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:36px; height:36px; margin-bottom: 1rem;">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+          <p class="placeholder-text" style="font-size: 1rem;">Liquidity Summary</p>
+          <p class="placeholder-desc" style="font-size: 0.75rem;">Complete the inputs above to assess capital buffers.</p>
+        </div>
+
+        <!-- Real Results container -->
+        <div id="resultsContainer" class="results-container">
+          
+          <div id="statusBanner" class="status-banner status-covered" style="padding: 0.5rem 0.75rem; margin-bottom: 1rem; font-size: 0.8125rem;">
+            <span class="status-indicator-dot" aria-hidden="true"></span>
+            <span>Status: Projected cash appears sufficient</span>
+          </div>
+
+          <div class="main-display" style="padding: 1rem 0; margin-bottom: 1rem;">
+            <p id="primaryDisplayLabel" class="display-label" style="font-size: 0.6875rem;">Estimated Capital Gap</p>
+            <h3 id="primaryDisplayValue" class="display-value no-gap" tabindex="-1" id="primaryResultHeading" style="font-size: 2.25rem;">$0 estimated gap</h3>
+            <p id="primaryDisplaySubLabel" class="display-sub-label" style="font-size: 0.75rem;">Reserves are fully protected.</p>
+          </div>
+
+          <div id="resultExplanation" class="explanation-box" style="padding: 0.75rem; font-size: 0.75rem; margin-bottom: 1rem;">
+            Projected cash appears sufficient to make the tax payment and preserve the selected operating reserve.
+          </div>
+
+          <!-- Pure CSS/HTML Cash Waterfall Comparison Graphic (Compact in Embed) -->
+          <div class="waterfall-container" style="padding: 0.75rem; margin-bottom: 1.25rem;">
+            <p class="waterfall-title" style="font-size: 0.625rem; margin-bottom: 0.5rem;">Asset allocation visual</p>
+            <div id="waterfallScreenReaderText" class="sr-only"></div>
+
+            <div class="waterfall-bar" style="height: 18px; margin-bottom: 0.5rem;">
+              <div id="segAvail" class="waterfall-seg seg-avail" style="width: 50%;"></div>
+              <div id="segReserve" class="waterfall-seg seg-reserve" style="width: 20%;"></div>
+              <div id="segCollections" class="waterfall-seg seg-collections" style="width: 30%;"></div>
+            </div>
+
+            <div class="waterfall-bar" style="height: 18px; margin-bottom: 0.5rem;">
+              <div id="segExpenses" class="waterfall-seg seg-expenses" style="width: 40%;"></div>
+              <div id="segTaxPayment" class="waterfall-seg seg-tax" style="width: 30%;"></div>
+              <div id="segProtected" class="waterfall-seg seg-protected" style="width: 20%;"></div>
+              <div id="segGap" class="waterfall-seg seg-gap" style="width: 10%;"></div>
+            </div>
+
+            <div class="waterfall-legend" style="gap: 0.375rem;">
+              <div class="legend-item"><span class="legend-dot seg-avail"></span><span>Cash</span></div>
+              <div class="legend-item"><span class="legend-dot seg-reserve"></span><span>Set aside</span></div>
+              <div class="legend-item"><span class="legend-dot seg-collections"></span><span>Collections</span></div>
+              <div class="legend-item"><span class="legend-dot seg-expenses"></span><span>Expenses</span></div>
+              <div class="legend-item"><span class="legend-dot seg-tax"></span><span>Tax due</span></div>
+              <div class="legend-item"><span class="legend-dot seg-protected"></span><span>Reserve</span></div>
+              <div class="legend-item" style="grid-column: span 2;"><span class="legend-dot seg-gap"></span><span style="font-weight: 600;">Liquidity Gap</span></div>
+            </div>
+          </div>
+
+          <!-- Detailed ledger row details (Hidden in basic embed view to keep compact unless results queried) -->
+          <div class="ledger-grid" aria-label="Worksheet breakdown" style="font-size: 0.75rem; margin-bottom: 1.25rem; gap: 0.5rem;">
+            <div class="ledger-row">
+              <span class="ledger-label">Tax funds due</span>
+              <span class="ledger-value" id="outTaxAmount">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Payment deadline</span>
+              <span class="ledger-value" id="outDueDate">N/A</span>
+            </div>
+            <div class="ledger-row" style="display: none;">
+              <span class="ledger-label">Days remaining</span>
+              <span class="ledger-value" id="outDaysRemaining">0 days</span>
+            </div>
+            <div class="ledger-row" style="display: none;">
+              <span class="ledger-label">Operating cash today</span>
+              <span class="ledger-value" id="outOpCash">$0</span>
+            </div>
+            <div class="ledger-row" style="display: none;">
+              <span class="ledger-label">Tax set aside</span>
+              <span class="ledger-value" id="outTaxReserve">$0</span>
+            </div>
+            <div class="ledger-row" style="display: none;">
+              <span class="ledger-label">Expected collections</span>
+              <span class="ledger-value" id="outExpectedCollections">$0</span>
+            </div>
+            <div class="ledger-row" style="display: none;">
+              <span class="ledger-label">Projected expenses until due</span>
+              <span class="ledger-value" id="outProjectedExpenses">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Cash before tax payment</span>
+              <span class="ledger-value" id="outCashBeforeTax">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Cash after tax payment</span>
+              <span class="ledger-value" id="outCashAfterTax">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Protected operating reserve</span>
+              <span class="ledger-value" id="outProtectedReserve">$0</span>
+            </div>
+            <div class="ledger-row" style="display: none;">
+              <span class="ledger-label">Remaining estimated headroom</span>
+              <span class="ledger-value" id="outRemainingHeadroom">$0</span>
+            </div>
+            <div class="ledger-row" style="display: none;">
+              <span class="ledger-label">Cash coverage percentage</span>
+              <span class="ledger-value" id="outCoveragePercent">100%</span>
+            </div>
+            <div class="ledger-row total-row" style="font-size: 0.8125rem;">
+              <span class="ledger-label">Minimum capital gap</span>
+              <span class="ledger-value" id="outMinCapitalGap">$0</span>
+            </div>
+            <div class="ledger-row" style="display: none;">
+              <span class="ledger-label">Planning buffer</span>
+              <span class="ledger-value" id="outPlanningBuffer">$0</span>
+            </div>
+            <div class="ledger-row total-row" style="border-bottom: double 2px var(--text-primary); font-size: 0.8125rem;">
+              <span class="ledger-label">Recommended funding target</span>
+              <span class="ledger-value" id="outRecCapitalTarget">$0</span>
+            </div>
+          </div>
+
+          <!-- Referral CTA section -->
+          <div class="referral-section" style="padding: 1rem; margin-bottom: 1rem;">
+            <h4 class="referral-title" style="font-size: 0.875rem; margin-bottom: 0.25rem;">Advisory Handoff Review</h4>
+            <p class="referral-desc" style="font-size: 0.75rem; margin-bottom: 0.75rem;">Connect with your advisor to explore working-capital protection or payment plan structures.</p>
+            
+            <label class="share-estimate-option" style="margin-bottom: 0.75rem;">
+              <input type="checkbox" id="shareEstimateDetails">
+              <span class="share-estimate-text" style="font-size: 0.71875rem;">Include the estimate details with the referral</span>
+            </label>
+
+            <!-- Main Button -->
+            <a id="primaryCtaBtn" href="https://YOUR-REFERRAL-FORM-URL.example" target="_blank" rel="noopener noreferrer" class="primary-btn" style="padding: 0.625rem 1rem;">
+              Refer one tax-pressure client
+            </a>
+          </div>
+
+          <!-- Secondary Actions -->
+          <div class="secondary-actions" style="gap: 0.5rem;">
+            <button id="copySummaryBtn" class="secondary-btn" style="padding: 0.5rem; font-size: 0.75rem;">Copy Summary</button>
+            <button id="printBtn" class="secondary-btn" style="padding: 0.5rem; font-size: 0.75rem;">Print / Save PDF</button>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- Micro Short Disclaimer -->
+    <div style="font-size: 0.6875rem; color: var(--text-light); text-align: center; margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem; line-height: 1.4;">
+      Educational cash-flow estimate based only on the information entered. Does not calculate tax liability and is not financial, legal, or accounting advice. Actual outcomes may differ.
+    </div>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" role="alert" aria-live="assertive" style="bottom: 1rem; right: 1rem; padding: 0.5rem 1rem; font-size: 0.75rem;"></div>
+
+  <!-- Scripts -->
+  <script src="config.js"></script>
+  <script src="calculator.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Embed specific height notification on load and calculations
+    document.addEventListener("DOMContentLoaded", function() {
+      // Set custom branded headers inside embed if passed in config
+      const embedBrand = document.getElementById("embedBrandName");
+      if (embedBrand && CONFIG.BRAND_NAME) {
+        embedBrand.textContent = CONFIG.BRAND_NAME;
+      }
+      
+      // Send height immediately to start the frame sizing correctly
+      setTimeout(sendHeightToParent, 100);
+      
+      // Observe form validation errors and result changes to resize parent
+      const observer = new MutationObserver(function() {
+        sendHeightToParent();
+      });
+      observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+    });
+  </script>
+</body>
+</html>

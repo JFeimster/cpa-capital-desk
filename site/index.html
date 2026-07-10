@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Pressure Capital Estimator | CPA Capital Desk</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Ensure accessibility and standard styling elements -->
+</head>
+<body>
+
+  <!-- Branded Header -->
+  <header>
+    <div class="container header-content">
+      <div class="logo">
+        <span class="logo-dot" aria-hidden="true"></span>
+        <span>CPA Capital Desk</span>
+      </div>
+      <div class="trust-badge" style="border: none; background: transparent; padding: 0;">
+        <span style="font-size: 0.8125rem; font-weight: 500; color: var(--text-secondary);">Tax Season Resource</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-eyebrow">CPA CAPITAL DESK</div>
+      <h1 class="hero-headline">Taxes are due.<br>Operating cash still has a job.</h1>
+      <p class="hero-subheadline">
+        Estimate the liquidity needed to make an upcoming tax payment without stripping your business of its selected operating reserve.
+      </p>
+
+      <!-- Trust Indicators -->
+      <div class="trust-indicators">
+        <div class="trust-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>No login</span>
+        </div>
+        <div class="trust-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>No credit pull</span>
+        </div>
+        <div class="trust-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span>No tax ID required</span>
+        </div>
+        <div class="trust-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <span>Private browser-based estimate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Worksheet & Results Container -->
+  <main class="container">
+    <div class="calculator-area">
+      
+      <!-- Input Panel (Left) -->
+      <section class="form-panel" aria-labelledby="formTitle">
+        <h2 id="formTitle" class="form-title">Liquidity Planning Worksheet</h2>
+        
+        <form id="calculatorForm" novalidate>
+          
+          <!-- 1. Tax payment amount -->
+          <div class="form-group">
+            <label for="taxAmount">Tax funds due</label>
+            <div class="input-wrapper">
+              <span class="input-prefix" aria-hidden="true">$</span>
+              <input type="number" id="taxAmount" class="has-prefix" placeholder="0" min="0" required>
+            </div>
+            <span class="helper-text">Enter the payment amount supplied by your tax professional or taxing authority. Do not estimate the underlying tax liability.</span>
+            <span class="error-message" id="taxAmountError" role="alert"></span>
+          </div>
+
+          <!-- 2. Payment due date -->
+          <div class="form-group">
+            <label for="dueDate">Payment due date</label>
+            <input type="date" id="dueDate" required>
+            <span class="helper-text">When the due date falls in the past, an overdue planning indicator is triggered.</span>
+            <span class="error-message" id="dueDateError" role="alert"></span>
+          </div>
+
+          <!-- 3. Current operating cash -->
+          <div class="form-group">
+            <label for="operatingCash">Operating cash available today</label>
+            <div class="input-wrapper">
+              <span class="input-prefix" aria-hidden="true">$</span>
+              <input type="number" id="operatingCash" class="has-prefix" placeholder="0" min="0" required>
+            </div>
+            <span class="helper-text">Exclude money already separated into a dedicated tax reserve.</span>
+            <span class="error-message" id="operatingCashError" role="alert"></span>
+          </div>
+
+          <!-- 4. Tax funds already reserved -->
+          <div class="form-group">
+            <label for="taxReserve">Tax funds already set aside</label>
+            <div class="input-wrapper">
+              <span class="input-prefix" aria-hidden="true">$</span>
+              <input type="number" id="taxReserve" class="has-prefix" placeholder="0" min="0">
+            </div>
+            <span class="helper-text">Optional. Unrestricted cash dedicated exclusively to taxes, separate from operating cash.</span>
+            <span class="error-message" id="taxReserveError" role="alert"></span>
+          </div>
+
+          <!-- 5. Expected cash collections -->
+          <div class="form-group">
+            <label for="expectedCollections">Expected cash collections before the due date</label>
+            <div class="input-wrapper">
+              <span class="input-prefix" aria-hidden="true">$</span>
+              <input type="number" id="expectedCollections" class="has-prefix" placeholder="0" min="0">
+            </div>
+            <span class="helper-text">Use cash reasonably expected to be collected before the payment deadline. Do not present uncertain receivables as guaranteed cash.</span>
+            <span class="error-message" id="expectedCollectionsError" role="alert"></span>
+          </div>
+
+          <!-- 6. Average monthly operating expenses -->
+          <div class="form-group">
+            <label for="monthlyOperatingExpenses">Average monthly operating expenses</label>
+            <div class="input-wrapper">
+              <span class="input-prefix" aria-hidden="true">$</span>
+              <input type="number" id="monthlyOperatingExpenses" class="has-prefix" placeholder="0" min="0" required>
+            </div>
+            <span class="helper-text">Include payroll, rent, recurring bills, debt payments, and normal operating costs.</span>
+            <span class="error-message" id="monthlyExpensesError" role="alert"></span>
+          </div>
+
+          <!-- 7. Protected operating reserve -->
+          <div class="form-group">
+            <label for="reserveWeeks">Operating reserve to protect</label>
+            <select id="reserveWeeks">
+              <option value="0">0 weeks</option>
+              <option value="2">2 weeks</option>
+              <option value="4" selected>4 weeks</option>
+              <option value="6">6 weeks</option>
+              <option value="8">8 weeks</option>
+            </select>
+            <span class="helper-text">Select how many weeks of operational runway to keep preserved after paying taxes.</span>
+          </div>
+
+          <!-- 8. Planning buffer -->
+          <div class="form-group">
+            <label for="bufferPercent">Additional planning buffer</label>
+            <select id="bufferPercent">
+              <option value="0">0%</option>
+              <option value="5" selected>5%</option>
+              <option value="10">10%</option>
+              <option value="15">15%</option>
+            </select>
+            <span class="helper-text">Optional planning cushion to account for volatile overhead or collection delays.</span>
+          </div>
+
+          <!-- Actions & Persist Options -->
+          <div class="form-actions">
+            <label class="persist-option">
+              <input type="checkbox" id="persistInputs">
+              <div class="persist-label-wrapper">
+                <span class="persist-label-title">Remember these calculator inputs on this device</span>
+                <span class="persist-label-desc">Unchecked by default. Only saves numeric fields and preferences locally.</span>
+              </div>
+            </label>
+
+            <button type="submit" class="primary-btn">Calculate Liquidity Gap</button>
+            <button id="clearSavedBtn" class="secondary-btn" style="display: none;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2M10 11v6M14 11v6"/>
+              </svg>
+              Clear Saved Inputs
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- Sticky Result Panel (Right) -->
+      <aside class="result-panel">
+        
+        <!-- Placeholder before calculation -->
+        <div id="resultsPlaceholder" class="result-placeholder">
+          <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+          <p class="placeholder-text">Liquidity Summary</p>
+          <p class="placeholder-desc">Complete the worksheet inputs to calculate potential capital shortfalls and runway impact.</p>
+        </div>
+
+        <!-- Calculated Results Panel (Shown dynamically) -->
+        <div id="resultsContainer" class="results-container">
+          
+          <!-- Result status label -->
+          <div id="statusBanner" class="status-banner status-covered">
+            <span class="status-indicator-dot" aria-hidden="true"></span>
+            <span>Status: Projected cash appears sufficient</span>
+          </div>
+
+          <!-- Large Display Output -->
+          <div class="main-display">
+            <p id="primaryDisplayLabel" class="display-label">Estimated Capital Gap</p>
+            <h3 id="primaryDisplayValue" class="display-value no-gap" tabindex="-1" id="primaryResultHeading">$0 estimated gap</h3>
+            <p id="primaryDisplaySubLabel" class="display-sub-label">Operating cash reserves are fully protected.</p>
+          </div>
+
+          <!-- Plain-language explanation -->
+          <div id="resultExplanation" class="explanation-box">
+            Projected cash appears sufficient to make the tax payment and preserve the selected operating reserve.
+          </div>
+
+          <!-- Pure CSS/HTML Cash Waterfall Comparison Graphic -->
+          <div class="waterfall-container">
+            <p class="waterfall-title">Cash Asset allocation comparison</p>
+            
+            <!-- Accessible screen reader equivalent -->
+            <div id="waterfallScreenReaderText" class="sr-only"></div>
+
+            <!-- Inflows / Resources Stacked Visualizer -->
+            <p style="font-size: 0.6875rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Total Available Cash Assets:</p>
+            <div class="waterfall-bar" aria-hidden="true">
+              <div id="segAvail" class="waterfall-seg seg-avail" style="width: 50%;" title="Operating Cash"></div>
+              <div id="segReserve" class="waterfall-seg seg-reserve" style="width: 20%;" title="Tax Reserves"></div>
+              <div id="segCollections" class="waterfall-seg seg-collections" style="width: 30%;" title="Expected Collections"></div>
+            </div>
+
+            <!-- Outflows / Required Allocations Stacked Visualizer -->
+            <p style="font-size: 0.6875rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Required Allocations & Reserve Target:</p>
+            <div class="waterfall-bar" aria-hidden="true">
+              <div id="segExpenses" class="waterfall-seg seg-expenses" style="width: 40%;" title="Projected OpExpenses"></div>
+              <div id="segTaxPayment" class="waterfall-seg seg-tax" style="width: 30%;" title="Tax Payment"></div>
+              <div id="segProtected" class="waterfall-seg seg-protected" style="width: 20%;" title="Protected Reserve Target"></div>
+              <div id="segGap" class="waterfall-seg seg-gap" style="width: 10%;" title="Estimated Liquidity Gap"></div>
+            </div>
+
+            <!-- Graphic Legend -->
+            <div class="waterfall-legend" aria-hidden="true">
+              <div class="legend-item">
+                <span class="legend-dot seg-avail"></span>
+                <span>Operating Cash</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot seg-reserve"></span>
+                <span>Tax set aside</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot seg-collections"></span>
+                <span>Collections</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot seg-expenses"></span>
+                <span>Op Expenses</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot seg-tax"></span>
+                <span>Tax due</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot seg-protected"></span>
+                <span>Protected reserve</span>
+              </div>
+              <div class="legend-item" style="grid-column: span 2;">
+                <span class="legend-dot seg-gap"></span>
+                <span style="font-weight: 600;">Estimated Liquidity Gap</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ledgers detail -->
+          <div class="ledger-grid" aria-label="Detailed Calculation Summary">
+            <div class="ledger-row">
+              <span class="ledger-label">Tax funds due</span>
+              <span class="ledger-value" id="outTaxAmount">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Payment deadline</span>
+              <span class="ledger-value" id="outDueDate">N/A</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Days remaining</span>
+              <span class="ledger-value" id="outDaysRemaining">0 days</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Operating cash today</span>
+              <span class="ledger-value" id="outOpCash">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Tax set aside</span>
+              <span class="ledger-value" id="outTaxReserve">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Expected collections</span>
+              <span class="ledger-value" id="outExpectedCollections">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Projected expenses until due</span>
+              <span class="ledger-value" id="outProjectedExpenses">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Cash before tax payment</span>
+              <span class="ledger-value" id="outCashBeforeTax">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Cash after tax payment</span>
+              <span class="ledger-value" id="outCashAfterTax">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Protected operating reserve</span>
+              <span class="ledger-value" id="outProtectedReserve">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Remaining estimated headroom</span>
+              <span class="ledger-value" id="outRemainingHeadroom">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Cash coverage percentage</span>
+              <span class="ledger-value" id="outCoveragePercent">100%</span>
+            </div>
+            <div class="ledger-row total-row">
+              <span class="ledger-label">Minimum capital gap</span>
+              <span class="ledger-value" id="outMinCapitalGap">$0</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Planning buffer</span>
+              <span class="ledger-value" id="outPlanningBuffer">$0</span>
+            </div>
+            <div class="ledger-row total-row" style="border-bottom: double 3px var(--text-primary);">
+              <span class="ledger-label">Recommended funding target</span>
+              <span class="ledger-value" id="outRecCapitalTarget">$0</span>
+            </div>
+          </div>
+
+          <!-- Advisor Handoff Referral Module -->
+          <div class="referral-section">
+            <h4 class="referral-title">Advisory Handoff Review</h4>
+            <p class="referral-desc">
+              Connect with your advisor to explore working-capital protection, payment structuring, or non-dilutive liquidity buffers before making the payment.
+            </p>
+            
+            <label class="share-estimate-option">
+              <input type="checkbox" id="shareEstimateDetails">
+              <span class="share-estimate-text">Include the estimate details with the referral</span>
+            </label>
+
+            <!-- Referral Main Button -->
+            <a id="primaryCtaBtn" href="https://YOUR-REFERRAL-FORM-URL.example" target="_blank" rel="noopener noreferrer" class="primary-btn">
+              Refer one tax-pressure client
+            </a>
+          </div>
+
+          <!-- Save/Copy Secondary Controls -->
+          <div class="secondary-actions">
+            <button id="copySummaryBtn" class="secondary-btn">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+              </svg>
+              Copy Summary
+            </button>
+            <button id="printBtn" class="secondary-btn">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                <rect width="12" height="8" x="6" y="14" rx="1"/>
+              </svg>
+              Print / Save PDF
+            </button>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Mobile Sticky Bottom CTA Drawer -->
+  <div id="mobileStickyPanel" class="mobile-sticky-cta">
+    <div class="mobile-cta-row">
+      <div class="mobile-cta-text">
+        <span class="mobile-cta-label">Estimated Capital Gap</span>
+        <span id="mobileStickyVal" class="mobile-cta-val">$0</span>
+      </div>
+      <a id="mobileStickyCtaBtn" href="https://YOUR-REFERRAL-FORM-URL.example" target="_blank" rel="noopener noreferrer" class="primary-btn">
+        Refer one tax-pressure client
+      </a>
+    </div>
+  </div>
+
+  <!-- Structured Section: "How the estimate works" -->
+  <section class="how-it-works-section" aria-labelledby="howItWorksTitle">
+    <div class="container">
+      <h2 id="howItWorksTitle" class="section-title">How the estimate works</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">STEP 01</div>
+          <h3 class="step-title">Enter your liabilities</h3>
+          <p class="step-desc">Provide the exact tax amount due and the upcoming payment deadline. This establishes the target boundary for your liquidity requirements.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">STEP 02</div>
+          <h3 class="step-title">Detail available reserves</h3>
+          <p class="step-desc">Input operating cash, dedicated tax reserves, and confident collections before the due date. This calculates your baseline capital assets.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">STEP 03</div>
+          <h3 class="step-title">Set your runway target</h3>
+          <p class="step-desc">Define a protected runway (e.g., 4 weeks of operating expenses) to maintain a safe working buffer. The tool automatically isolates any gap.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Advisor Handoff Section -->
+  <section class="container" style="margin-bottom: 2rem;">
+    <div class="advisor-handoff-block">
+      <div class="handoff-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+      <h2 class="handoff-title">Professional capital consultation</h2>
+      <p class="handoff-text">
+        CPAs, bookkeepers, and tax advisors routinely help businesses bridge short-term cash flow gaps. Before compromising your operating reserve, review your calculations with an expert to identify responsible capital resources, tax deferral payment plans, or overhead adjustments.
+      </p>
+      <a id="handoffCtaBtn" href="https://YOUR-REFERRAL-FORM-URL.example" target="_blank" rel="noopener noreferrer" class="primary-btn handoff-btn">
+        Refer one tax-pressure client
+      </a>
+    </div>
+  </section>
+
+  <!-- FAQ Section Accordion -->
+  <section class="faq-section" aria-labelledby="faqTitle">
+    <div class="container">
+      <h2 id="faqTitle" class="section-title">Frequently Asked Questions</h2>
+      <div class="faq-grid">
+        
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Does this calculate how much tax I owe?</span>
+            <svg class="faq-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              No. This is not a tax-liability calculator. Your tax professional or taxing authority supplies the tax payment amount, and this tool estimates the subsequent impact on your operating cash flow to identify liquidity issues.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>What should be included in operating expenses?</span>
+            <svg class="faq-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Include normal operational overhead such as payroll, rent, utilities, insurance, routine software bills, debt payments, and regular operating costs required to keep the business active.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Why protect an operating reserve?</span>
+            <svg class="faq-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              An operating-cash reserve protects a business against sudden cash flow dips, revenue volatility, or collection delays. Preserving 4 to 8 weeks of operating costs prevents the business from running out of unrestricted cash immediately after making a major tax payment.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Are expected receivables guaranteed cash?</span>
+            <svg class="faq-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              No. Expected receivables represent customer promises but are subject to non-payment or delays. For a realistic estimate, only include cash collections that you are highly confident will settle before the tax payment deadline.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Does this determine whether I qualify for funding?</span>
+            <svg class="faq-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              No. This tool is purely educational and does not make underwriting promises, guarantee credit approval, or evaluate specific funding programs. It highlights liquidity gaps to guide structured advisory conversations.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Can a CPA or bookkeeper complete this for a client?</span>
+            <svg class="faq-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Yes. Advisors, fractional CFOs, and bookkeepers regularly use this worksheet during cash planning sessions to help business clients visualize and manage upcoming working capital requirements.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>What information is sent when I click the referral button?</span>
+            <svg class="faq-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              By default, clicking the button only transmits non-sensitive planning metadata (like the status label and general gap bands) along with partner attribution. No client names, contact details, tax identifiers, bank info, or specific dollar amounts are sent unless you explicitly check the 'Include the estimate details with the referral' checkbox.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Can this be embedded on another website?</span>
+            <svg class="faq-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Yes. The estimator is designed to be fully embeddable using our lightweight, zero-dependency widget loader, allowing any CPA firm, bookkeeping service, or advisory partner to host it on their client portal or website.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section with Legal Compliance / Disclaimer -->
+  <footer>
+    <div class="container footer-content">
+      <div class="footer-branding">
+        <div class="footer-logo">CPA Capital Desk</div>
+        <div class="footer-links">
+          <a href="https://YOUR-REFERRAL-FORM-URL.example/privacy" target="_blank" rel="noopener">Privacy Policy</a>
+          <span aria-hidden="true">&bull;</span>
+          <a href="https://YOUR-REFERRAL-FORM-URL.example/terms" target="_blank" rel="noopener">Terms of Service</a>
+        </div>
+      </div>
+
+      <div class="disclaimer-area">
+        <p class="disclaimer-title">Compliance & Advisory Disclaimers</p>
+        <p class="disclaimer-text">
+          This calculator provides an educational cash-flow estimate based only on the information entered. It does not calculate tax liability and is not tax, legal, accounting, lending, or financial advice. It is not an offer of credit or a guarantee of approval. Actual obligations, penalties, payment-plan options, financing costs, and available solutions may differ. Consult the appropriate tax professional, taxing authority, and qualified financial professionals before making a decision.
+        </p>
+        <ul class="disclaimer-list">
+          <li>Borrowing can add cost and repayment pressure.</li>
+          <li>A payment arrangement, collection acceleration, expense reduction, or another solution may be more appropriate than financing.</li>
+          <li>The tool does not determine whether funding is suitable.</li>
+          <li>The user should not enter sensitive tax, banking, or personal identity information.</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" role="alert" aria-live="assertive"></div>
+
+  <!-- Reusable calculator engine and form app binder scripts -->
+  <script src="config.js"></script>
+  <script src="calculator.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "Tax Pressure Capital Estimator",
+  "description": "A professional financial liquidity-gap calculator that estimates the capital needed to pay upcoming taxes while maintaining a safe operating cash reserve.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,190 @@
+TAX PRESSURE CAPITAL ESTIMATOR
+PROJECT DOCUMENTATION, CORE EQUATIONS, TEST CASES, AND SYSTEM HANDOFF REFERENCE
+
+This document serves as a clean, copy-pasteable reference for the Tax Pressure Capital Estimator.
+You can copy this text directly into Google Docs or Word without carrying any dark thread styles or formatting issues.
+
+================================================================================
+1. PROJECT OVERVIEW
+================================================================================
+The Tax Pressure Capital Estimator is a premium, professional, framework-free financial worksheet and emergency liquidity dashboard. It is designed to help CPAs, bookkeepers, tax preparers, and fractional CFOs turn tax-season cash pressure into structured, responsible capital-advisory referral opportunities.
+
+IMPORTANT BOUNDARY:
+This tool does NOT estimate or calculate tax liability. Instead, it takes a known tax obligation and reveals the estimated liquidity gap that will exist after paying the tax, covering projected operating expenses, and maintaining a selected cash reserve.
+
+
+================================================================================
+2. REQUIRED FILE STRUCTURE (STATIC WEBSITES IN /site)
+================================================================================
+* index.html      - Standalone full-page landing page with heroes, FAQS, and trust badges.
+* embed.html      - Compact distraction-free iframe widget.
+* styles.css      - Unified stylesheet with full light/dark theme variables, print support, and responsive layouts.
+* config.js       - Global configuration definitions (brand names, default parameters, CTA redirection links).
+* calculator.js   - Pure, deterministic financial calculation engine functions.
+* app.js          - Client-side form handlers, clipboard copies, state storage, and postMessage frame sizers.
+* widget.js       - Zero-dependency widget loader that injects and auto-resizes iframe instances.
+
+
+================================================================================
+3. EMBED INSTALLATION SNIPPET
+================================================================================
+To embed the compact calculator on any partner page (e.g. WordPress, Wix, Webflow, custom HTML), insert this markup:
+
+<!-- 1. The container element where the widget will mount -->
+<div id="tax-pressure-estimator"></div>
+
+<!-- 2. Zero-dependency embed loader script with custom data parameters -->
+<script
+  src="https://YOUR-DOMAIN.com/site/widget.js"
+  data-target="tax-pressure-estimator"
+  data-partner-id="PARTNER-123"
+  data-source="cpa-website"
+  data-campaign="tax-season"
+  data-theme="light"
+  data-cta-url="https://YOUR-REFERRAL-FORM-URL.example"
+  async>
+</script>
+
+
+================================================================================
+4. SUPPORTED CUSTOMIZATIONS
+================================================================================
+4.1 Script Data Attributes (widget.js)
+You can control the widget configuration dynamically by setting any of the following attributes on your loader script:
+
+* data-target     - Matches the ID of the HTML container where the widget mounts (Default: 'tax-pressure-estimator')
+* data-partner-id - Unique identifier for tracking partner referrals (Default: 'partner-default')
+* data-source     - Identifies where traffic originates (e.g., email-blast, sidebar) (Default: 'cpa-calc')
+* data-campaign   - Tracks seasonal campaigns (e.g., q2-estimated-taxes) (Default: 'tax-pressure-estimator')
+* data-theme      - Forces a visual mode inside the widget. Choices: "light", "dark", "auto" (Default: "dark")
+* data-cta-url    - Overrides the destination redirect when clicking the referral button
+* data-accent     - Standard CSS color string (e.g., "#2E5A44") to override branding
+* data-persist    - Enables/Disables browser localStorage parameters (Default: opt-in via checkbox)
+
+4.2 URL Query Parameters (index.html & embed.html)
+The standalone page and widget automatically detect and preserve these parameters throughout the user's calculation session, appending them when building the final referral URL:
+* partner_id
+* source
+* campaign
+* utm_source
+* utm_medium
+* utm_campaign
+* theme (e.g., theme=dark or theme=auto)
+* accent (e.g., accent=%232563eb for custom hex codes)
+* cta_url (forces destination override securely)
+
+
+================================================================================
+5. CORE FINANCIAL EQUATIONS
+================================================================================
+The calculation engine uses these deterministic equations (normalized to local midnights at runtime to guarantee timezone accuracy):
+
+1) daysUntilDue = Max(0, Ceil((dueDate - currentLocalDate) / millisecondsPerDay))
+
+2) projectedOperatingExpenses = monthlyOperatingExpenses * (daysUntilDue / 30.4375)
+
+3) protectedReserve = monthlyOperatingExpenses * (reserveWeeks / 4.345)
+
+4) projectedCashBeforeTax = operatingCash + taxReserve + expectedCollections - projectedOperatingExpenses
+
+5) projectedCashAfterTax = projectedCashBeforeTax - taxAmount
+
+6) minimumCapitalGap = Max(0, taxAmount + protectedReserve - projectedCashBeforeTax)
+
+7) planningBuffer = minimumCapitalGap * (bufferPercent / 100)
+
+8) recommendedCapitalTarget = RoundUpToNearest500(minimumCapitalGap + planningBuffer)
+
+9) remainingHeadroom = projectedCashBeforeTax - taxAmount - protectedReserve
+
+10) cashCoveragePercent = (projectedCashBeforeTax / (taxAmount + protectedReserve)) * 100
+
+
+================================================================================
+6. CORE RESULT STATUS LOGIC
+================================================================================
+* Overdue (Payment due date falls in the past):
+  Display: "Payment date passed" (Takes absolute priority even if projected balances appear sufficient)
+
+* Critical (minimumCapitalGap > 0 AND (daysUntilDue <= 14 OR projectedCashBeforeTax < 0)):
+  Display: "Critical cash pressure"
+
+* Pressured (minimumCapitalGap > 0 AND Critical rules do not apply):
+  Display: "Capital gap identified"
+
+* Tight (minimumCapitalGap == 0 AND remainingHeadroom < monthlyOperatingExpenses * 0.25):
+  Display: "Covered, but tight"
+
+* Covered (minimumCapitalGap == 0 AND Tight rules do not apply):
+  Display: "Projected cash appears sufficient"
+
+
+================================================================================
+7. MANUAL TEST CASES & EXPECTED BEHAVIORS
+================================================================================
+Test Case 1: Capital Gap Shortfall
+* Inputs:
+  - Tax funds due: $50,000
+  - Due date: 30 days from today
+  - Operating cash: $30,000
+  - Tax reserve: $10,000
+  - Expected collections: $20,000
+  - Monthly operating expenses: $30,000
+  - Reserve weeks to protect: 4
+  - Planning buffer: 5%
+* Expected Result:
+  - Positive capital gap: ~$47,187
+  - Recommended capital target (rounded up to nearest $500): $50,000
+  - Status: "Capital gap identified" or "Critical cash pressure" (depending on exact rounding offsets of local current midnight)
+
+Test Case 2: Sufficient Cash Coverage
+* Inputs:
+  - Tax funds due: $25,000
+  - Due date: 30 days from today
+  - Operating cash: $80,000
+  - Tax reserve: $10,000
+  - Expected collections: $20,000
+  - Monthly operating expenses: $30,000
+  - Reserve weeks to protect: 4
+  - Planning buffer: 5%
+* Expected Result:
+  - Minimum capital gap: $0
+  - Recommended capital target: $0
+  - Positive headroom: ~$55,431
+  - Status: "Projected cash appears sufficient" or "Covered, but tight"
+
+Test Case 3: Overdue Payment Date
+* Inputs:
+  - Due date: 7 days in the past
+* Expected Result:
+  - Days remaining: 0
+  - Status: "Payment date passed" (indicated clearly on the result summary banner)
+
+Test Case 4: Zero Expense Scenario (Pre-revenue / Early stage)
+* Inputs:
+  - Monthly expenses: $0
+  - Reserve weeks: 4
+* Expected Result:
+  - Protected reserve: $0
+  - No divide-by-zero or NaN errors
+  - Correct capital-gap calculation
+
+Test Case 5: Dual Embed Integration
+* Setup: Place two separate <div id="..."> elements on the same test page, each loaded with a unique widget.js script tag pointing to different target containers.
+* Expected Result:
+  - Both widgets render completely independently
+  - PostMessage height messages do not leak, and each iframe resizes to its own correct height
+  - No global variable collisions or duplicate script load warnings
+
+
+================================================================================
+8. SAFETY, COMPLIANCE, & PRIVACY BOUNDARIES
+================================================================================
+8.1 Privacy Guardrails:
+To maintain strict enterprise-grade privacy standards, this application:
+1. Never stores or transmits sensitive data including SSNs, EINs, bank credentials, tax returns, personal client names, contact details, or financial accounts.
+2. Never transmits exact calculation values to the referral destination URL unless the user explicitly checks the opt-in checkbox labeled "Include the estimate details with the referral".
+3. Stores parameters in localStorage only after explicit user opt-in via "Remember these calculator inputs on this device". A visible clear button is provided to purge cache instantly.
+
+8.2 Legal Language:
+The standalone footer and embed results incorporate a formal disclaimer reminding advisors and clients that this tool is purely educational and does not constitute financial, lending, tax, legal, or accounting advice.

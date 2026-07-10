@@ -1,6 +1,14 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+<img width="1200" height="798" alt="Image" src="https://github.com/user-attachments/assets/6fbc9ca7-2d40-4839-a840-8b4e7f801c9e" />
 </div>
+
+# Site Files & Resources
+
+- URL: https://cpa-capital-desk.vercel.app/
+- GitHub: https://github.com/JFeimster/cpa-capital-desk/ 
+- Vercel: https://vercel.com/jason-feimsters-projects/cpa-capital-desk
+- Drive: https://bit.ly/4pb1ac6 
+- AI Studio: https://bit.ly/44WSkp2
 
 # Run and deploy your AI Studio app
 

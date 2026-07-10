@@ -1,4 +1,10 @@
 {
   "framework": null,
-  "installCommand": ""
+  "installCommand": "",
+  "git": {
+    "deploymentEnabled": {
+      "*": false,
+      "main": false
+    }
+  }
 }

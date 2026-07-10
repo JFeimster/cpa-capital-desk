@@ -1,3 +1,13 @@
+// ============================================================================
+// DEPRECATED CONTAINER PREVIEW WRAPPER
+// ============================================================================
+// NOTE: This server.ts file is NOT used in the production Vercel deployment.
+// It exists solely to satisfy the Google AI Studio container sandbox runtime
+// by starting a lightweight static files server on Port 3000.
+//
+// The absolute production source of truth is the framework-free `/site` folder.
+// ============================================================================
+
 import express from "express";
 import path from "path";
 
@@ -15,3 +25,4 @@ app.get("/", (req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
+

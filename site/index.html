@@ -177,7 +177,17 @@
             </label>
 
             <button type="submit" class="primary-btn">Calculate Liquidity Gap</button>
-            <button id="clearSavedBtn" class="secondary-btn" style="display: none;">
+            <button id="loadExampleBtn" type="button" class="secondary-btn" style="margin-top: 0.5rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Load Sample Demo Data
+            </button>
+            <button id="clearSavedBtn" type="button" class="secondary-btn" style="display: none; margin-top: 0.5rem;">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2M10 11v6M14 11v6"/>
               </svg>
@@ -212,7 +222,7 @@
           <!-- Large Display Output -->
           <div class="main-display">
             <p id="primaryDisplayLabel" class="display-label">Estimated Capital Gap</p>
-            <h3 id="primaryDisplayValue" class="display-value no-gap" tabindex="-1" id="primaryResultHeading">$0 estimated gap</h3>
+            <h3 id="primaryDisplayValue" class="display-value no-gap" tabindex="-1">$0 estimated gap</h3>
             <p id="primaryDisplaySubLabel" class="display-sub-label">Operating cash reserves are fully protected.</p>
           </div>
 
@@ -362,14 +372,14 @@
 
           <!-- Save/Copy Secondary Controls -->
           <div class="secondary-actions">
-            <button id="copySummaryBtn" class="secondary-btn">
+            <button id="copySummaryBtn" type="button" class="secondary-btn">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
                 <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
               </svg>
               Copy Summary
             </button>
-            <button id="printBtn" class="secondary-btn">
+            <button id="printBtn" type="button" class="secondary-btn">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
                 <rect width="12" height="8" x="6" y="14" rx="1"/>

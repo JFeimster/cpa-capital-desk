@@ -225,28 +225,37 @@ document.addEventListener("DOMContentLoaded", function() {
     document.documentElement.setAttribute("data-theme", themeParam);
   }
 
-  // 3. Set Input Defaults (Prefill Test Case 1 values for standard user discovery)
-  const today = new Date();
-  const defaultDueDate = new Date();
-  defaultDueDate.setDate(today.getDate() + 30); // 30 days from today
-  
-  const dueDateInput = document.getElementById("dueDate");
-  if (dueDateInput) {
-    // Format to YYYY-MM-DD for native input
-    const yyyy = defaultDueDate.getFullYear();
-    const mm = String(defaultDueDate.getMonth() + 1).padStart(2, "0");
-    const dd = String(defaultDueDate.getDate()).padStart(2, "0");
-    dueDateInput.value = `${yyyy}-${mm}-${dd}`;
+  // 2.5. Demo Mode & Example Detection
+  const isDemoMode = (urlParams.get("demo") === "1") || (typeof CONFIG !== "undefined" && CONFIG.DEMO_MODE === true);
+  let isDemoOrExampleActive = isDemoMode;
+
+  function loadTestCase1Values() {
+    const today = new Date();
+    const defaultDueDate = new Date();
+    defaultDueDate.setDate(today.getDate() + 30); // 30 days from today
+    
+    const dueDateInput = document.getElementById("dueDate");
+    if (dueDateInput) {
+      // Format to YYYY-MM-DD for native input
+      const yyyy = defaultDueDate.getFullYear();
+      const mm = String(defaultDueDate.getMonth() + 1).padStart(2, "0");
+      const dd = String(defaultDueDate.getDate()).padStart(2, "0");
+      dueDateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    const elTaxAmount = document.getElementById("taxAmount");
+    if (elTaxAmount) elTaxAmount.value = "50000";
+    const elOperatingCash = document.getElementById("operatingCash");
+    if (elOperatingCash) elOperatingCash.value = "30000";
+    const elTaxReserve = document.getElementById("taxReserve");
+    if (elTaxReserve) elTaxReserve.value = "10000";
+    const elExpectedCollections = document.getElementById("expectedCollections");
+    if (elExpectedCollections) elExpectedCollections.value = "20000";
+    const elMonthlyExpenses = document.getElementById("monthlyOperatingExpenses");
+    if (elMonthlyExpenses) elMonthlyExpenses.value = "30000";
   }
 
-  // Set default values for inputs from Test Case 1:
-  document.getElementById("taxAmount").value = "50000";
-  document.getElementById("operatingCash").value = "30000";
-  document.getElementById("taxReserve").value = "10000";
-  document.getElementById("expectedCollections").value = "20000";
-  document.getElementById("monthlyOperatingExpenses").value = "30000";
-  
-  // Set dropdown defaults
+  // 3. Set Dropdown Defaults (These are always set to default selections initially)
   const reserveWeeksSelect = document.getElementById("reserveWeeks");
   if (reserveWeeksSelect) {
     reserveWeeksSelect.value = String(CONFIG.DEFAULT_RESERVE_WEEKS);
@@ -281,27 +290,69 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  // Restore saved inputs if opted-in
-  if (isPersistenceOptedIn) {
+  // Initialize flag to trace if we restored state
+  let hasRestoredState = false;
+
+  if (isDemoMode) {
+    // Demo Mode: Populate the Test Case 1 values immediately
+    loadTestCase1Values();
+  } else if (isPersistenceOptedIn) {
+    // Normal Mode: Restore saved inputs if persistence was opted-in
     try {
       const saved = JSON.parse(localStorage.getItem(dataStoreKey));
       if (saved) {
-        if (saved.taxAmount !== undefined) document.getElementById("taxAmount").value = saved.taxAmount;
-        if (saved.dueDate !== undefined) document.getElementById("dueDate").value = saved.dueDate;
-        if (saved.operatingCash !== undefined) document.getElementById("operatingCash").value = saved.operatingCash;
-        if (saved.taxReserve !== undefined) document.getElementById("taxReserve").value = saved.taxReserve;
-        if (saved.expectedCollections !== undefined) document.getElementById("expectedCollections").value = saved.expectedCollections;
-        if (saved.monthlyOperatingExpenses !== undefined) document.getElementById("monthlyOperatingExpenses").value = saved.monthlyOperatingExpenses;
+        const elTax = document.getElementById("taxAmount");
+        if (elTax && saved.taxAmount !== undefined) elTax.value = saved.taxAmount;
+        const elDue = document.getElementById("dueDate");
+        if (elDue && saved.dueDate !== undefined) elDue.value = saved.dueDate;
+        const elOp = document.getElementById("operatingCash");
+        if (elOp && saved.operatingCash !== undefined) elOp.value = saved.operatingCash;
+        const elRes = document.getElementById("taxReserve");
+        if (elRes && saved.taxReserve !== undefined) elRes.value = saved.taxReserve;
+        const elColl = document.getElementById("expectedCollections");
+        if (elColl && saved.expectedCollections !== undefined) elColl.value = saved.expectedCollections;
+        const elExp = document.getElementById("monthlyOperatingExpenses");
+        if (elExp && saved.monthlyOperatingExpenses !== undefined) elExp.value = saved.monthlyOperatingExpenses;
         if (saved.reserveWeeks !== undefined && reserveWeeksSelect) reserveWeeksSelect.value = saved.reserveWeeks;
         if (saved.bufferPercent !== undefined && bufferPercentSelect) bufferPercentSelect.value = saved.bufferPercent;
         
         // Show clear button since saved values exist
         const clearBtn = document.getElementById("clearSavedBtn");
         if (clearBtn) clearBtn.style.display = "inline-flex";
+
+        hasRestoredState = true;
       }
     } catch (err) {
       console.warn("Failed to load saved state from localStorage", err);
     }
+  } else {
+    // Normal first visit: financial inputs remain empty/blank
+    const elTax = document.getElementById("taxAmount");
+    if (elTax) elTax.value = "";
+    const elDue = document.getElementById("dueDate");
+    if (elDue) elDue.value = "";
+    const elOp = document.getElementById("operatingCash");
+    if (elOp) elOp.value = "";
+    const elRes = document.getElementById("taxReserve");
+    if (elRes) elRes.value = "";
+    const elColl = document.getElementById("expectedCollections");
+    if (elColl) elColl.value = "";
+    const elExp = document.getElementById("monthlyOperatingExpenses");
+    if (elExp) elExp.value = "";
+  }
+
+  // Set up "Load Sample Demo Data" secondary button listener
+  const loadExampleBtn = document.getElementById("loadExampleBtn");
+  if (loadExampleBtn) {
+    loadExampleBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      // Block saving example data to localStorage
+      isDemoOrExampleActive = true;
+      loadTestCase1Values();
+      // Calculate and trigger full explicit submit effects (including focus & completion tracking)
+      validateAndCalculate(false, false);
+      showToast("Sample demo data loaded.");
+    });
   }
 
   // Fire viewed analytics tracking
@@ -309,14 +360,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Save inputs handler (calls only when persistence enabled)
   function saveInputsToLocalStorage() {
+    if (isDemoOrExampleActive) return; // Prevent overwriting saved state with demo/example data!
     if (persistCheckbox && persistCheckbox.checked) {
       const stateToSave = {
-        taxAmount: document.getElementById("taxAmount").value,
-        dueDate: document.getElementById("dueDate").value,
-        operatingCash: document.getElementById("operatingCash").value,
-        taxReserve: document.getElementById("taxReserve").value,
-        expectedCollections: document.getElementById("expectedCollections").value,
-        monthlyOperatingExpenses: document.getElementById("monthlyOperatingExpenses").value,
+        taxAmount: document.getElementById("taxAmount")?.value || "",
+        dueDate: document.getElementById("dueDate")?.value || "",
+        operatingCash: document.getElementById("operatingCash")?.value || "",
+        taxReserve: document.getElementById("taxReserve")?.value || "",
+        expectedCollections: document.getElementById("expectedCollections")?.value || "",
+        monthlyOperatingExpenses: document.getElementById("monthlyOperatingExpenses")?.value || "",
         reserveWeeks: reserveWeeksSelect ? reserveWeeksSelect.value : CONFIG.DEFAULT_RESERVE_WEEKS,
         bufferPercent: bufferPercentSelect ? bufferPercentSelect.value : CONFIG.DEFAULT_PLANNING_BUFFER_PERCENT
       };
@@ -337,12 +389,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
     clearBtn.addEventListener("click", function(e) {
       e.preventDefault();
+      
       // Reset inputs to empty or zeroes safely
-      document.getElementById("taxAmount").value = "";
-      document.getElementById("operatingCash").value = "";
-      document.getElementById("taxReserve").value = "";
-      document.getElementById("expectedCollections").value = "";
-      document.getElementById("monthlyOperatingExpenses").value = "";
+      isDemoOrExampleActive = false;
+      const elTax = document.getElementById("taxAmount");
+      if (elTax) elTax.value = "";
+      const elOp = document.getElementById("operatingCash");
+      if (elOp) elOp.value = "";
+      const elRes = document.getElementById("taxReserve");
+      if (elRes) elRes.value = "";
+      const elColl = document.getElementById("expectedCollections");
+      if (elColl) elColl.value = "";
+      const elExp = document.getElementById("monthlyOperatingExpenses");
+      if (elExp) elExp.value = "";
+      
       if (reserveWeeksSelect) reserveWeeksSelect.value = String(CONFIG.DEFAULT_RESERVE_WEEKS);
       if (bufferPercentSelect) bufferPercentSelect.value = String(CONFIG.DEFAULT_PLANNING_BUFFER_PERCENT);
 
@@ -354,8 +414,24 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       
       // Reset results display
-      document.getElementById("resultsPlaceholder").style.display = "flex";
-      document.getElementById("resultsContainer").style.classList.remove("active");
+      const resultsPlaceholder = document.getElementById("resultsPlaceholder");
+      if (resultsPlaceholder) {
+        resultsPlaceholder.style.display = "flex";
+      }
+      
+      const resultsContainer = document.getElementById("resultsContainer");
+      if (resultsContainer) {
+        resultsContainer.classList.remove("active");
+        resultsContainer.classList.remove("overdue", "critical", "pressured", "tight", "covered");
+        resultsContainer.style.display = "none";
+      }
+
+      const mobileStickyPanel = document.getElementById("mobileStickyPanel");
+      if (mobileStickyPanel) {
+        mobileStickyPanel.classList.remove("active");
+      }
+
+      AppState.currentCalculations = null;
       
       trackEvent("tax_estimator_inputs_cleared");
       showToast("Calculator inputs cleared.");
@@ -368,7 +444,7 @@ document.addEventListener("DOMContentLoaded", function() {
     e.preventDefault();
     if (validateAndCalculate()) {
       // Focus primary result heading as required by guidelines
-      const resultHeading = document.getElementById("primaryResultHeading");
+      const resultHeading = document.getElementById("primaryDisplayValue");
       if (resultHeading) {
         resultHeading.focus();
         resultHeading.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -396,17 +472,25 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // Calculate immediately on load so the pre-filled values render a result right away
-  validateAndCalculate(true);
+  // On load execution block
+  if (isDemoMode) {
+    // Calculate immediately in demo mode, normal analytics allowed
+    validateAndCalculate(true, false);
+  } else if (hasRestoredState) {
+    // Render result for restored inputs, but suppress completion analytics event
+    validateAndCalculate(true, true);
+  } else {
+    // Normal blank first visit: do not call validateAndCalculate() automatically!
+  }
 
   // 6. Primary Validation and Calculation Engine Connection
-  function validateAndCalculate(isSilent = false) {
+  function validateAndCalculate(isSilent = false, suppressAnalytics = false) {
     let hasError = false;
 
     // Retrieve input values
-    const taxAmountVal = document.getElementById("taxAmount").value.trim();
-    const dueDateVal = document.getElementById("dueDate").value;
-    const operatingCashVal = document.getElementById("operatingCash").value.trim();
+    const taxAmountVal = document.getElementById("taxAmount")?.value.trim() || "";
+    const dueDateVal = document.getElementById("dueDate")?.value || "";
+    const operatingCashVal = document.getElementById("operatingCash")?.value.trim() || "";
     const taxReserveVal = document.getElementById("taxReserve").value.trim();
     const expectedCollectionsVal = document.getElementById("expectedCollections").value.trim();
     const monthlyExpensesVal = document.getElementById("monthlyOperatingExpenses").value.trim();
@@ -474,24 +558,39 @@ document.addEventListener("DOMContentLoaded", function() {
     AppState.currentCalculations = results;
 
     // Trigger Render pipeline
-    renderResults(results);
+    renderResults(results, suppressAnalytics);
     return true;
   }
 
   // 7. Results Renderer
-  function renderResults(res) {
+  function renderResults(res, suppressAnalytics = false) {
     // Hide placeholder, show active results
-    document.getElementById("resultsPlaceholder").style.display = "none";
+    const resultsPlaceholder = document.getElementById("resultsPlaceholder");
+    if (resultsPlaceholder) {
+      resultsPlaceholder.style.display = "none";
+    }
     
     const resultsContainer = document.getElementById("resultsContainer");
-    resultsContainer.style.display = "block";
-    resultsContainer.className = "results-container active " + res.statusId;
+    if (resultsContainer) {
+      resultsContainer.style.display = "block";
+      resultsContainer.className = "results-container active " + res.statusId;
+    }
 
     // Render Status Banner
     const banner = document.getElementById("statusBanner");
     if (banner) {
       banner.className = `status-banner status-${res.statusId}`;
-      banner.innerHTML = `<span class="status-indicator-dot" aria-hidden="true"></span><span>Status: ${res.statusLabel}</span>`;
+      banner.textContent = "";
+      
+      const dot = document.createElement("span");
+      dot.className = "status-indicator-dot";
+      dot.setAttribute("aria-hidden", "true");
+      
+      const textSpan = document.createElement("span");
+      textSpan.textContent = `Status: ${res.statusLabel}`;
+      
+      banner.appendChild(dot);
+      banner.appendChild(textSpan);
     }
 
     // Display primary gap or headroom
@@ -499,39 +598,47 @@ document.addEventListener("DOMContentLoaded", function() {
     const displayLabel = document.getElementById("primaryDisplayLabel");
     const displaySubLabel = document.getElementById("primaryDisplaySubLabel");
 
-    if (res.minimumCapitalGap > 0) {
-      displayVal.textContent = formatCurrency(res.minimumCapitalGap);
-      displayVal.className = "display-value has-gap" + (res.statusId === "critical" ? " is-critical" : "");
+    if (displayVal) {
+      if (res.minimumCapitalGap > 0) {
+        displayVal.textContent = formatCurrency(res.minimumCapitalGap);
+        displayVal.className = "display-value has-gap" + (res.statusId === "critical" ? " is-critical" : "");
+      } else {
+        displayVal.textContent = "$0 estimated gap";
+        displayVal.className = "display-value no-gap";
+      }
+    }
+    if (displayLabel) {
       displayLabel.textContent = "Estimated Capital Gap";
-      displaySubLabel.textContent = `A capital shortfall is expected. Recommended funding target with ${res.inputs.bufferPercent}% planning buffer is ${formatCurrency(res.recommendedCapitalTarget)}.`;
-    } else {
-      displayVal.textContent = "$0 estimated gap";
-      displayVal.className = "display-value no-gap";
-      displayLabel.textContent = "Estimated Capital Gap";
-      displaySubLabel.textContent = `Projected cash appears sufficient to pay taxes and cover your operating reserve. Remaining estimated headroom: ${formatCurrency(res.remainingHeadroom)}.`;
+    }
+    if (displaySubLabel) {
+      if (res.minimumCapitalGap > 0) {
+        displaySubLabel.textContent = `A capital shortfall is expected. Recommended funding target with ${res.inputs.bufferPercent}% planning buffer is ${formatCurrency(res.recommendedCapitalTarget)}.`;
+      } else {
+        displaySubLabel.textContent = `Projected cash appears sufficient to pay taxes and cover your operating reserve. Remaining estimated headroom: ${formatCurrency(res.remainingHeadroom)}.`;
+      }
     }
 
-    // Ledger Items Output
-    document.getElementById("outTaxAmount").textContent = formatCurrency(res.inputs.taxAmount);
-    document.getElementById("outDueDate").textContent = formatDate(res.inputs.dueDate);
-    document.getElementById("outDaysRemaining").textContent = `${res.daysUntilDue} days`;
-    document.getElementById("outOpCash").textContent = formatCurrency(res.inputs.operatingCash);
-    document.getElementById("outTaxReserve").textContent = formatCurrency(res.inputs.taxReserve);
-    document.getElementById("outExpectedCollections").textContent = formatCurrency(res.inputs.expectedCollections);
-    document.getElementById("outProjectedExpenses").textContent = formatCurrency(res.projectedOperatingExpenses);
-    document.getElementById("outCashBeforeTax").textContent = formatCurrency(res.projectedCashBeforeTax);
-    document.getElementById("outCashAfterTax").textContent = formatCurrency(res.projectedCashAfterTax);
-    document.getElementById("outProtectedReserve").textContent = formatCurrency(res.protectedReserve);
-    document.getElementById("outRemainingHeadroom").textContent = formatCurrency(Math.max(0, res.remainingHeadroom));
-    document.getElementById("outMinCapitalGap").textContent = formatCurrency(res.minimumCapitalGap);
-    document.getElementById("outPlanningBuffer").textContent = formatCurrency(res.planningBuffer);
-    document.getElementById("outRecCapitalTarget").textContent = formatCurrency(res.recommendedCapitalTarget);
-    document.getElementById("outCoveragePercent").textContent = `${Math.round(res.cashCoveragePercent)}%`;
+    // Ledger Items Output helper with null guards
+    const setElementText = (id, text) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    };
 
-    // Overdue label adjustments if applicable
-    if (res.isOverdue) {
-      document.getElementById("outDaysRemaining").textContent = "Passed (Overdue)";
-    }
+    setElementText("outTaxAmount", formatCurrency(res.inputs.taxAmount));
+    setElementText("outDueDate", formatDate(res.inputs.dueDate));
+    setElementText("outDaysRemaining", res.isOverdue ? "Passed (Overdue)" : `${res.daysUntilDue} days`);
+    setElementText("outOpCash", formatCurrency(res.inputs.operatingCash));
+    setElementText("outTaxReserve", formatCurrency(res.inputs.taxReserve));
+    setElementText("outExpectedCollections", formatCurrency(res.inputs.expectedCollections));
+    setElementText("outProjectedExpenses", formatCurrency(res.projectedOperatingExpenses));
+    setElementText("outCashBeforeTax", formatCurrency(res.projectedCashBeforeTax));
+    setElementText("outCashAfterTax", formatCurrency(res.projectedCashAfterTax));
+    setElementText("outProtectedReserve", formatCurrency(res.protectedReserve));
+    setElementText("outRemainingHeadroom", formatCurrency(Math.max(0, res.remainingHeadroom)));
+    setElementText("outMinCapitalGap", formatCurrency(res.minimumCapitalGap));
+    setElementText("outPlanningBuffer", formatCurrency(res.planningBuffer));
+    setElementText("outRecCapitalTarget", formatCurrency(res.recommendedCapitalTarget));
+    setElementText("outCoveragePercent", `${Math.round(res.cashCoveragePercent)}%`);
 
     // Plain Language Explanations Based on Status
     const explanationEl = document.getElementById("resultExplanation");
@@ -591,11 +698,13 @@ document.addEventListener("DOMContentLoaded", function() {
     updateCTAUrls(res);
 
     // Track completed calculation event
-    trackEvent("tax_estimator_completed", {
-      status_id: res.statusId,
-      gap_amount: res.minimumCapitalGap,
-      target_amount: res.recommendedCapitalTarget
-    });
+    if (!suppressAnalytics) {
+      trackEvent("tax_estimator_completed", {
+        status_id: res.statusId,
+        gap_amount: res.minimumCapitalGap,
+        target_amount: res.recommendedCapitalTarget
+      });
+    }
 
     // Sync heights with iframe parents
     sendHeightToParent();

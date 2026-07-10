@@ -1,28 +1,29 @@
-<div align="center">
-<img width="1200" height="798" alt="Image" src="https://github.com/user-attachments/assets/6fbc9ca7-2d40-4839-a840-8b4e7f801c9e" />
-</div>
+# Tax Pressure Capital Estimator
 
-# Site Files & Resources
+This repository is configured for a framework-free static deployment. 
 
-- URL: https://cpa-capital-desk.vercel.app/
-- GitHub: https://github.com/JFeimster/cpa-capital-desk/ 
-- Vercel: https://vercel.com/jason-feimsters-projects/cpa-capital-desk
-- Drive: https://bit.ly/4pb1ac6 
-- AI Studio: https://bit.ly/44WSkp2
+## 🚨 PRODUCTION SOURCE OF TRUTH
+The **`/site`** directory is the absolute production source of truth. All functional code, style sheets, embed widgets, and calculations live inside this folder.
 
-# Run and deploy your AI Studio app
+### Vercel Deployment Instructions
+When deploying this project to Vercel, use the following configuration in your Vercel Dashboard:
+- **Root Directory:** `site`
+- **Framework Preset:** `Other` (or `null` / No Framework)
+- **Build Command:** *Leave Empty* (No build command)
+- **Install Command:** *Leave Empty* (No install command)
 
-This contains everything you need to run your app locally.
+### Key Architecture Notes
+- **No Node/React Runtime Needed:** The production application runs completely in the client's browser as clean, native HTML5, CSS3, and JavaScript.
+- **No API Keys Required:** The production application does not communicate with external private APIs or require any sensitive environment variables or secrets.
+- **No Gemini Runtime Dependency:** This tool relies on pure, deterministic financial equations computed entirely locally for maximum speed, security, and enterprise privacy.
 
-View your app in AI Studio: https://ai.studio/apps/4665e3b0-00de-4b57-a858-1b97b9560d27
+---
 
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Directory Index (`/site`)
+* `/site/index.html` - Premium standalone landing page & full advisory worksheet.
+* `/site/embed.html` - Ultra-lightweight widget designed to be safely iframe-embedded.
+* `/site/styles.css` - Unified stylesheet supporting beautiful, responsive layouts with custom print media styles and cohesive light/dark variable schemes.
+* `/site/config.js` - Global white-label settings, partner defaults, and brand parameters.
+* `/site/calculator.js` - Pure, unit-tested deterministic financial math calculations.
+* `/site/app.js` - DOM managers, browser state persistors, and iframe auto-resize listeners.
+* `/site/widget.js` - Non-blocking script used by external CPA partner sites to dynamically inject the calculator iframe.

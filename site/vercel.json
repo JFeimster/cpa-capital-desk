@@ -1,13 +1,4 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "installCommand": "",
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "git": {
-    "deploymentEnabled": {
-      "*": false,
-      "main": false
-    }
-  }
+  "installCommand": ""
 }

@@ -72,6 +72,12 @@ The standalone page and widget automatically detect and preserve these parameter
 
 *All displayed values parsed from query strings are sanitized to prevent unsafe text injection.*
 
+### 3. Demonstration & Trial Modes
+The application supports a clean, blank-slate normal mode for real client usage, as well as easy demonstration flows for reviewers and sales reps:
+* **Normal Mode (Default)**: On a standard first visit, all financial input fields remain empty and clean. No calculations are run automatically, preventing premature event logs or placeholder results.
+* **Load Sample Demo Data Button**: A secondary button is available directly on the form actions bar. Clicking this instantly populates the form with Test Case 1 values and triggers an active calculation, allowing users to discover the tool's interactive charts and waterfalls without manually entering numbers. This action explicitly bypasses `localStorage` persistence, protecting any real client data previously saved.
+* **Automated Demo Mode**: Append `?demo=1` to the URL query string or configure `DEMO_MODE: true` in `config.js` to automatically pre-populate the form with Test Case 1 values and calculate immediately upon loading.
+
 ---
 
 ## Core Financial Equations

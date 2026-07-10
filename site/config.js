@@ -18,6 +18,7 @@ var CONFIG = {
   TERMS_URL: "https://YOUR-REFERRAL-FORM-URL.example/terms",           // Optional: link to your terms of service
   
   // Calculator Defaults
+  DEMO_MODE: false,                       // Set to true to enable demonstration mode by default
   DEFAULT_RESERVE_WEEKS: 4,               // Default operating reserve (choices: 0, 2, 4, 6, 8)
   DEFAULT_PLANNING_BUFFER_PERCENT: 5,     // Default optional planning buffer (choices: 0, 5, 10, 15)
   DEFAULT_VISUAL_THEME: "dark",           // Default visual theme: "light", "dark", or "auto"

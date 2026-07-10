@@ -120,7 +120,8 @@
               <span class="persist-label-title">Remember inputs</span>
             </label>
             <button type="submit" class="primary-btn">Calculate Liquidity Gap</button>
-            <button id="clearSavedBtn" class="secondary-btn" style="display: none;">Clear Inputs</button>
+            <button id="loadExampleBtn" type="button" class="secondary-btn" style="margin-top: 0.5rem;">Load Sample Demo Data</button>
+            <button id="clearSavedBtn" type="button" class="secondary-btn" style="display: none; margin-top: 0.5rem;">Clear Inputs</button>
           </div>
 
         </form>
@@ -148,7 +149,7 @@
 
           <div class="main-display" style="padding: 1rem 0; margin-bottom: 1rem;">
             <p id="primaryDisplayLabel" class="display-label" style="font-size: 0.6875rem;">Estimated Capital Gap</p>
-            <h3 id="primaryDisplayValue" class="display-value no-gap" tabindex="-1" id="primaryResultHeading" style="font-size: 2.25rem;">$0 estimated gap</h3>
+            <h3 id="primaryDisplayValue" class="display-value no-gap" tabindex="-1" style="font-size: 2.25rem;">$0 estimated gap</h3>
             <p id="primaryDisplaySubLabel" class="display-sub-label" style="font-size: 0.75rem;">Reserves are fully protected.</p>
           </div>
 
@@ -267,8 +268,8 @@
 
           <!-- Secondary Actions -->
           <div class="secondary-actions" style="gap: 0.5rem;">
-            <button id="copySummaryBtn" class="secondary-btn" style="padding: 0.5rem; font-size: 0.75rem;">Copy Summary</button>
-            <button id="printBtn" class="secondary-btn" style="padding: 0.5rem; font-size: 0.75rem;">Print / Save PDF</button>
+            <button id="copySummaryBtn" type="button" class="secondary-btn" style="padding: 0.5rem; font-size: 0.75rem;">Copy Summary</button>
+            <button id="printBtn" type="button" class="secondary-btn" style="padding: 0.5rem; font-size: 0.75rem;">Print / Save PDF</button>
           </div>
 
         </div>
